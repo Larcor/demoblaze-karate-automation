@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>Karate Timeline</title>
+    <style>
+      body, html { font-family: arial, sans-serif; font-size: 11pt; }
+      #visualization { box-sizing: border-box; width: 100%; height: 300px; }
+      .vis-item.failed { background-color: #F2928C; }
+      .page-heading { padding: 0.5em; margin-bottom: 0.5em; background-color: lightcyan; border: 1px solid gray; }
+    </style>
+    <script src="res/vis.min.js"></script>
+    <link href="res/vis.min.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="page-heading">
+      <a href="karate-summary.html">Summary</a>
+    </div>     
+    <div id="visualization"></div>
+    <script>
+var groups = [{"content":"Test worker","id":1}];
+var items = [{"id":1,"group":1,"content":"examples\/users\/users[1:10]","start":1764109151032,"end":1764109154224,"title":"examples\/users\/users[1:10] 17:19:11.032-17:19:14.224 Crear un nuevo usuario exitosamente (Signup Happy Path)"},{"id":2,"group":1,"content":"examples\/users\/users[2:19]","start":1764109154231,"end":1764109154826,"title":"examples\/users\/users[2:19] 17:19:14.231-17:19:14.826 Fallar al crear un usuario duplicado (Signup Sad Path)"},{"id":3,"group":1,"content":"examples\/users\/users[3:33]","start":1764109154831,"end":1764109157489,"title":"examples\/users\/users[3:33] 17:19:14.831-17:19:17.489 Login exitoso con credenciales correctas (Login Happy Path)"},{"id":4,"group":1,"content":"examples\/users\/users[4:49]","start":1764109157493,"end":1764109157757,"title":"examples\/users\/users[4:49] 17:19:17.493-17:19:17.757 Login fallido con contraseña incorrecta (Login Sad Path)"}];
+</script>
+    <script>
+      var container = document.getElementById('visualization');
+      var timeline = new vis.Timeline(container);
+      timeline.setOptions({groupOrder: 'content'});
+      timeline.setGroups(new vis.DataSet(groups));
+      timeline.setItems(new vis.DataSet(items));
+    </script>
+  </body>
+</html>

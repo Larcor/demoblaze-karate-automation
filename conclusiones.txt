@@ -1,0 +1,22 @@
+HALLAZGOS Y CONCLUSIONES DEL EJERCICIO
+
+1. ESTRATEGIA DE DATOS
+   Hallazgo: La API de Demoblaze mantiene los registros de usuarios creados. Al ejecutar pruebas consecutivas con datos estáticos, el servicio retornaba errores de "User already exist", generando falsos positivos en las pruebas.
+   Solución: Se implementó una estrategia de generación de datos dinámicos utilizando marcas de tiempo (Timestamp via System.currentTimeMillis()). Esto garantiza que cada ejecución utilice un nombre de usuario único (ej. "user_171500283"), asegurando un entorno de prueba limpio y aislado sin necesidad de limpiar la base de datos manualmente.
+
+2. MANEJO DE CONCURRENCIA Y LATENCIA (RACE CONDITIONS)
+   Hallazgo: Se identificó una race condition crítica entre los endpoints '/signup' y '/login'. Aunque el registro retornaba éxito (200 OK), la base de datos de la API pública presentaba una latencia variable en la replicación, provocando que el login inmediato fallara con "Wrong password".
+   Solución: Se evaluó el uso de 'retry' (reintentos), pero debido al bloqueo temporal (rate limiting) de la API ante fallos consecutivos, se optó por una espera explícita ('Thread.sleep') controlada desde la configuración global. Esta decisión priorizó la estabilidad del 100% sobre la velocidad de ejecución.
+
+3. ARQUITECTURA DEL PROYECTO Y BUENAS PRÁCTICAS
+   Implementación: Se refactorizó el código siguiendo el patrón "Data-Driven Testing".
+   - Separación de Responsabilidades: Los cuerpos de las peticiones (Payloads JSON) se extrajeron a archivos externos en la carpeta 'data/'.
+   - Código Limpio: Los archivos .feature se mantienen enfocados en la lógica de negocio (Gherkin), delegando la complejidad técnica (generación de usuarios, esperas) a funciones globales en 'karate-config.js'.
+
+4. ANÁLISIS DE LA API
+   Observación: La API no sigue estrictamente los estándares RESTful para el manejo de errores. Retorna código HTTP 200 OK incluso para errores de negocio (Usuario duplicado, Usuario no existente).
+   Adaptación: Las pruebas automatizadas se diseñaron para validar no solo el código de estado, sino también el contenido del cuerpo de respuesta (JSON Schema validation), asegurando que los mensajes de error ("errorMessage") sean los esperados.
+
+5. OBSERVABILIDAD Y REPORTES
+   Mejora: Se integró la librería 'net.masterthought.cucumber-reporting'.
+   Impacto: El proyecto ahora genera dashboards ejecutivos (HTML) con gráficos estadísticos, desglose de pasos y metadatos del entorno, proporcionando una visibilidad superior a los logs de consola estándar.

@@ -1,0 +1,6 @@
+{
+    "id": "#(cartId)",
+    "cookie": "#(cookie)",
+    "prod_id": #(prodId),
+    "flag": #(flag)
+}
